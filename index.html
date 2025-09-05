@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPARK | Centralised Student Activity Record Platform</title>
+    <link rel="icon" type="image/png" href="512px-Chinese_dragon_asset_heraldry.svg.webp">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Audiowide&family=Exo+2:wght@600&display=swap" rel="stylesheet">
+
+<style>
+    /* Reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { font-family: 'Poppins', sans-serif; background: #0d0d0d; color: #f5f5f5; overflow-x: hidden; }
+
+    a { text-decoration: none; color: inherit; }
+    h1, h2, h3, h4, h5 { font-weight: 600; }
+
+    /* Navbar */
+    header {
+      width: 100%;
+      padding: 1rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0,0,0,0.7);
+      position: fixed; top: 0; left: 0;
+      z-index: 1000;
+    }
+.logo1 {
+  display: flex;
+  flex-direction: column; /* stack items vertically */
+  align-items: center;    /* center them horizontally */
+}
+
+.logo1 img {
+  height: 40px;   /* adjust as needed */
+  width: 70px;
+  margin-bottom: 0px; /* space between image and text */
+}
+
+.logo1 span {
+  font-size: 10px;
+  font-weight: 100;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.logo-text {
+  display: flex;
+  justify-content: space-evenly;  /* equal spacing */
+  align-items: flex-end;          /* keep baseline aligned */
+  width: 100px;                   /* control logo width */
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  margin-left: 30%;
+  margin-right: 12%;
+}
+
+.logo-text span {
+  display: inline-block; /* important for transform */
+  text-align: right;
+}
+
+.logo-text .s {
+  font-family: 'Rajdhani';
+    transform: scaleX(0.7);
+    margin-right: 4px;
+}
+.logo-text .p {
+  font-family: 'Rajdhani';
+  transform: scaleX(1.7);
+}
+.logo-text .a {
+  font-family: 'Rajdhani';
+    transform: scaleX(0.9);
+}
+.logo-text .r {
+  font-family: 'Rajdhani';
+  transform: scaleX(1.3);
+}
+.logo-text .k {
+  font-family: 'Rajdhani';
+    transform: scaleX(0.7);
+}
+
+
+
+    nav a { margin-left: 2rem; font-size: 0.95rem; transition: color 0.3s; }
+    nav a:hover { color: #00c896; }
+
+    /* Hero */
+    .hero {
+      width: 100%; height: 100vh;
+      background: url('college-5757815.jpg') no-repeat center center;
+      background-size: cover;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      position: center;
+    }
+    .hero::after { /* dark overlay for text readability */
+      content: "";
+      position: absolute; top: 0%; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.55);
+      z-index: 0;
+    }
+    .hero-content {
+      position: relative; z-index: 1;
+      max-width: 800px;
+    }
+    .hero h2 { font-size: 3rem; margin-bottom: 1rem; }
+    .hero p { font-size: 1.2rem; margin-bottom: 2rem; color: #ccc; }
+    .btn {
+      padding: 0.8rem 1.6rem;
+      border-radius: 30px;
+      font-weight: bold;
+      margin: 0 0.5rem;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+    .btn-primary { background: #fdfdfd; color: #2c2c2c; }
+    .btn-primary:hover { background: #aeadad; }
+
+    /* Section Generic */
+    section { padding: 5rem 3rem;}
+    h3.section-title { text-align: center; font-size: 2rem; margin-bottom: 2rem; color: rgba(68, 190, 221, 0.533); }
+
+    /* About / Problem */
+    .about p { text-align: center; max-width: 900px; margin: auto; font-size: 1.1rem; color: #bbb; }
+
+    /* Features / Solution */
+    .features {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem; margin-top: 2rem;
+    }
+    .feature {
+      background: #1a1a1a; padding: 2rem;
+      border-radius: 15px; text-align: center;
+      transition: transform 0.3s;
+    }
+    .feature:hover { transform: translateY(-8px);   box-shadow: 0 10px 25px rgba(115, 194, 251, 0.2);}
+    .feature h4 { margin-bottom: 1rem; color: #fff; }
+    .feature p { color: #aaa; }
+
+    /* Impact */
+    .impact-list {
+      display: flex; flex-wrap: wrap; gap: 2rem;
+      justify-content: center; margin-top: 2rem;
+    }
+    .impact {
+      flex: 1 1 250px; background: #1a1a1a;
+      padding: 1.5rem; border-radius: 15px; text-align: center;
+    }
+    .impact h5 { margin-bottom: 0.8rem; color: #00c896; }
+
+    /* Footer */
+    footer {
+      background: #0a0a0a; padding: 2rem;
+      text-align: center; color: #888; font-size: 0.9rem;
+    }
+    footer a { color: #00c896; margin: 0 0.5rem; }
+
+    .why-choose-us {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #0a0a0a; /* dark futuristic background */
+  color: #fff;
+}
+
+.why-choose-us h2 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  background: linear-gradient(90deg, #fefefe, #000000);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.feature-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(115, 194, 251, 0.2);
+}
+
+.feature-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.8rem;
+  color: #a4d8f7;
+}
+
+.feature-card p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #afafaf;
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header>
+
+    <div class="logo1">
+       <img src="512px-Chinese_dragon_asset_heraldry Background Removed.png" alt="SPARK Logo"> 
+      <div class="dragon">DRAGONBYTE</div>
+    </div>
+
+
+        <div class="logo-text">
+            <span class="s">S</span>
+            <span class="p">P</span>
+            <span class="a">A</span>
+            <span class="r">R</span>
+            <span class="k">K</span>
+        </div>
+
+   
+    <nav>
+      <a href="#">Home</a>
+      <a href="#about">About</a>
+      <a href="#features">Solution</a>
+      <a href="#impact">Impact</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+
+
+      <h2>Student Performance & Achievement Record Keeper</h2>
+      <p>Where Every Achievement Sparks a Brighter Future</p>
+      <a href="login.html" class="btn btn-primary">Get Started</a>
+    </div>
+  </section>
+
+  <!-- About Problem -->
+  <section id="about" class="about">
+    <section class="why-choose-us">
+  <h2>Why Choose Us?</h2>
+  <div class="features">
+    <div class="feature-card">
+      <h3>Holistic Student Profile</h3>
+      <p>Comprehensive records that capture academics, extracurriculars, and achievements all in one place.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>Seamless Accreditation Support</h3>
+      <p>Instant reports and documentation tailored for NAAC and other accreditation bodies.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>Future-Ready Portfolios</h3>
+      <p>Students graduate with dynamic, digital portfolios that showcase their complete journey.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>AI-Powered Features</h3>
+      <p>Smart insights, automated activity recognition, and personalized recommendations.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>Integration Ready</h3>
+      <p>Seamlessly integrates with existing ERP, LMS, and university systems.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>Mobile + Web First</h3>
+      <p>Accessible anywhere, anytime with a responsive mobile and web design.</p>
+    </div>
+  </div>
+</section>
+
+  </section>
+
+  <!-- Solution Features -->
+  <section id="features">
+    <h3 class="section-title">Our Solution</h3>
+    <div class="features">
+      <div class="feature">
+        <h4>📊 Dynamic Dashboard</h4>
+        <p>Real-time updates on academic performance, attendance, and credit-based activities.</p>
+      </div>
+      <div class="feature">
+        <h4>📝 Activity Tracker</h4>
+        <p>Upload and validate seminars, conferences, courses, internships, and extra-curriculars.</p>
+      </div>
+      <div class="feature">
+        <h4>✅ Faculty Approval</h4>
+        <p>Faculty validation ensures credibility of all student-submitted records.</p>
+      </div>
+      <div class="feature">
+        <h4>📂 Digital Portfolio</h4>
+        <p>Auto-generated, verified student portfolio in PDF or shareable link.</p>
+      </div>
+      <div class="feature">
+        <h4>📈 Analytics & Reporting</h4>
+        <p>Generate reports for NAAC, AICTE, NIRF, or internal evaluations with ease.</p>
+      </div>
+      <div class="feature">
+        <h4>🔗 Integration</h4>
+        <p>Connects with existing LMS, ERP, or university platforms for seamless adoption.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Impact -->
+  <section id="impact">
+    <h3 class="section-title">Impact & Benefits</h3>
+    <div class="impact-list">
+      <div class="impact">
+        <h5>For Students</h5>
+        <p>Build a holistic, verified profile that boosts placements, scholarships, and admissions.</p>
+      </div>
+      <div class="impact">
+        <h5>For Faculty</h5>
+        <p>Access real-time data to guide, mentor, and track student progress effectively.</p>
+      </div>
+      <div class="impact">
+        <h5>For Institutions</h5>
+        <p>Streamline accreditation processes and enable data-driven decision making.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact">
+    <p>&copy; 2025 SPARK Project. All Rights Reserved.</p>
+    <p>
+      <a href="#">Privacy Policy</a> | 
+      <a href="#">Terms</a> | 
+      <a href="mailto:info@spark-hei.com">Contact</a>
+    </p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student & Institute Portal</title>
+<style>
+* { box-sizing: border-box; margin:0; padding:0; }
+body, html { height:100%; font-family: 'Segoe UI', sans-serif; }
+canvas#bg-canvas { position:fixed; inset:0; z-index:0; }
+.top-right { position:fixed; top:18px; right:18px; z-index:40; }
+.toggle-btn { font-size:22px; background:transparent; border:none; cursor:pointer; }
+
+.layout { position:relative; z-index:10; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px; }
+.panel-wrap { display:flex; gap:28px; backdrop-filter: blur(8px); padding:28px; border-radius:18px; background: rgba(255,255,255,0.06); }
+
+.col { width:360px; min-height:480px; border-radius:12px; padding:22px; background:rgba(255,255,255,0.92); box-shadow:0 12px 30px rgba(2,6,23,0.12); display:flex; flex-direction:column; }
+.col h3 { margin-top:0; color:#0b4a55; }
+.col p { color:#4b5563; margin-top:6px; margin-bottom:12px; }
+.col-content { flex:1; display:flex; flex-direction:column; justify-content:flex-end; }
+.btn-group { margin-bottom:16px; }
+
+.btn { width:100%; padding:12px 14px; border-radius:10px; border:none; cursor:pointer; font-weight:600; margin-bottom:10px; transition:0.2s; }
+.btn-primary { background:linear-gradient(90deg,#06b6d4,#3b82f6); color:white; box-shadow:0 8px 18px rgba(59,130,246,0.18); }
+.btn-ghost { background:transparent; border:1px solid rgba(0,0,0,0.06); color:#0f172a; }
+
+.form { display:none; margin-top:8px; }
+.form label { display:block; margin-bottom:6px; font-size:13px; color:#374151; }
+.form input, .form select { width:100%; padding:10px; border-radius:8px; border:1px solid #d1d5db; margin-bottom:12px; }
+
+body.dark { background: linear-gradient(135deg,#0f172a,#0b2a3a,#123444); color:#e6f7ff; }
+body.dark .col { background: rgba(10,14,22,0.7); color:#e6f7ff; box-shadow:0 12px 30px rgba(0,0,0,0.5); }
+body.dark .col h3 { color:#e6f7ff; }
+body.dark .col p { color:#cbd5e1; }
+body.dark .form input, body.dark .form select { background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color:#e6f7ff; }
+body.dark .btn-primary { background: linear-gradient(90deg, #00f5d4, #00c4f0); color:#e6f7ff; box-shadow:0 0 12px rgba(0,245,212,0.5); }
+body.dark .btn-ghost { background:transparent; border:1px solid rgba(255,255,255,0.2); color:#e6f7ff; }
+
+#popup {
+  position:fixed; top:20px; right:20px; background:#10b981; color:white; padding:12px 20px; border-radius:8px;
+  font-weight:600; font-size:16px; box-shadow:0 6px 16px rgba(0,0,0,0.2); display:none; z-index:100;
+  transition:opacity 0.3s ease;
+}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+
+<div id="popup">Successfully Registered</div>
+
+<div class="top-right">
+  <button id="themeToggle" class="toggle-btn" title="Toggle theme">🌙</button>
+</div>
+
+<div class="layout">
+  <div class="panel-wrap">
+    <div class="col" id="studentPanel">
+      <h3>Student Portal</h3>
+      <p>Login or register as a student.</p>
+      <div class="col-content">
+        <div class="btn-group">
+          <button class="btn btn-primary" id="studentLoginBtn">Student Login</button>
+          <button class="btn btn-ghost" id="studentRegBtn">Student Register</button>
+        </div>
+        <div class="form" id="studentLoginForm">
+          <label>Email</label><input id="s_login_email" type="email"/>
+          <label>Password</label><input id="s_login_pw" type="password"/>
+          <button class="btn btn-primary" id="s_login_submit">Login</button>
+          <button class="btn btn-ghost" id="s_back">Back</button>
+        </div>
+        <div class="form" id="studentRegForm">
+          <label>Full name</label><input id="s_name"/>
+          <label>Email</label><input id="s_email" type="email"/>
+          <label>Password</label><input id="s_pw" type="password"/>
+          <label>Institute</label>
+          <select id="s_institute"><option value="">Select Institute</option></select>
+          <button class="btn btn-primary" id="s_reg_submit">Register</button>
+          <button class="btn btn-ghost" id="s_back2">Back</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col" id="instPanel">
+      <h3>Institute Portal</h3>
+      <p>Register your institute or login.</p>
+      <div class="col-content">
+        <div class="btn-group">
+          <button class="btn btn-primary" id="instLoginBtn">Institute Login</button>
+          <button class="btn btn-ghost" id="instRegBtn">Institute Register</button>
+        </div>
+        <div class="form" id="instLoginForm">
+          <label>Official Email</label><input id="i_login_email" type="email"/>
+          <label>Password</label><input id="i_login_pw" type="password"/>
+          <button class="btn btn-primary" id="i_login_submit">Login</button>
+          <button class="btn btn-ghost" id="i_back">Back</button>
+        </div>
+        <div class="form" id="instRegForm">
+          <label>Institute Name</label><input id="i_name"/>
+          <label>City</label><input id="i_city"/>
+          <label>Contact No</label><input id="i_contact"/>
+          <label>Official Email</label><input id="i_email" type="email"/>
+          <label>Password</label><input id="i_pw" type="password"/>
+          <button class="btn btn-primary" id="i_reg_submit">Register Institute</button>
+          <button class="btn btn-ghost" id="i_back2">Back</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ===== Canvas background =====
+const canvas=document.getElementById('bg-canvas'); const ctx=canvas.getContext('2d'); let W,H,mouse={x:-1000,y:-1000};
+function resize(){ W=canvas.width=innerWidth; H=canvas.height=innerHeight; }
+window.addEventListener('resize',resize); resize();
+const shapes=[]; function rand(min,max){return Math.random()*(max-min)+min;}
+for(let i=0;i<12;i++){ shapes.push({x:rand(0,W),y:rand(0,H),w:rand(40,160),h:rand(40,160),angle:rand(0,Math.PI*2),speed:rand(0.2,0.8),color:`hsla(${rand(160,260)},60%,60%,0.14)`,type:Math.random()>0.5?'rect':'circle',drift:rand(-0.2,0.2)});}
+function draw(){ ctx.clearRect(0,0,W,H); const cx=W/2,cy=H/2,dx=(mouse.x-cx)*0.02,dy=(mouse.y-cy)*0.02; for(let s of shapes){ s.x+=Math.cos(s.angle)*s.speed*0.3+s.drift; s.y+=Math.sin(s.angle)*s.speed*0.3; s.angle+=0.002*s.speed; if(s.x>W+200)s.x=-200; if(s.x<-200)s.x=W+200; if(s.y>H+200)s.y=-200; if(s.y<-200)s.y=H+200; ctx.save(); ctx.translate(s.x+dx,s.y+dy); ctx.rotate(s.angle); ctx.fillStyle=s.color; if(s.type==='rect')ctx.fillRect(-s.w/2,-s.h/2,s.w,s.h); else{ctx.beginPath(); ctx.arc(0,0,s.w/2,0,Math.PI*2); ctx.fill();} ctx.restore();} requestAnimationFrame(draw);}
+draw();
+window.addEventListener('mousemove',e=>{mouse.x=e.clientX; mouse.y=e.clientY;});
+window.addEventListener('touchmove',e=>{if(e.touches[0]){mouse.x=e.touches[0].clientX; mouse.y=e.touches[0].clientY;}});
+
+// ===== Panel logic =====
+const studentLoginBtn=document.getElementById('studentLoginBtn'); 
+const studentRegBtn=document.getElementById('studentRegBtn');
+const instLoginBtn=document.getElementById('instLoginBtn'); 
+const instRegBtn=document.getElementById('instRegBtn');
+const studentLoginForm=document.getElementById('studentLoginForm'); 
+const studentRegForm=document.getElementById('studentRegForm');
+const instLoginForm=document.getElementById('instLoginForm'); 
+const instRegForm=document.getElementById('instRegForm');
+const studentPanel=document.getElementById('studentPanel'); 
+const instPanel=document.getElementById('instPanel');
+
+function hideAllForms(keepSide=null){
+  studentLoginForm.style.display='none'; studentRegForm.style.display='none';
+  instLoginForm.style.display='none'; instRegForm.style.display='none';
+  if(keepSide==='student'){ instPanel.style.display='none'; studentPanel.style.display='flex'; }
+  else if(keepSide==='institute'){ studentPanel.style.display='none'; instPanel.style.display='flex'; }
+  else{ studentPanel.style.display='flex'; instPanel.style.display='flex'; }
+}
+
+studentLoginBtn.addEventListener('click',()=>{ hideAllForms('student'); studentLoginForm.style.display='block'; });
+studentRegBtn.addEventListener('click',()=>{ hideAllForms('student'); studentRegForm.style.display='block'; });
+instLoginBtn.addEventListener('click',()=>{ hideAllForms('institute'); instLoginForm.style.display='block'; });
+instRegBtn.addEventListener('click',()=>{ hideAllForms('institute'); instRegForm.style.display='block'; });
+
+document.getElementById('s_back').addEventListener('click',()=>{ hideAllForms(); });
+document.getElementById('s_back2').addEventListener('click',()=>{ hideAllForms(); });
+document.getElementById('i_back').addEventListener('click',()=>{ hideAllForms(); });
+document.getElementById('i_back2').addEventListener('click',()=>{ hideAllForms(); });
+
+// ===== Theme toggle =====
+const themeToggle=document.getElementById('themeToggle');
+themeToggle.addEventListener('click',()=>{
+  document.body.classList.toggle('dark');
+  themeToggle.textContent=document.body.classList.contains('dark')?'☀️':'🌙';
+});
+
+// ===== Dummy DB & Institutes =====
+const studentDB=[], instDB=[];
+const institutes=['IIT Delhi','IIT Bombay','IIT Madras','IIT Kanpur','IIT Kharagpur','IIT Roorkee','IIT Guwahati','IIT BHU','IISc Bangalore','BITS Pilani'];
+const sInstSelect=document.getElementById('s_institute');
+function loadInstitutes(){ sInstSelect.innerHTML='<option value="">Select Institute</option>'; institutes.forEach(inst=>{ const opt=document.createElement('option'); opt.value=inst; opt.textContent=inst; sInstSelect.appendChild(opt); }); }
+loadInstitutes();
+
+// ===== Student Registration =====
+const popup=document.getElementById('popup');
+document.getElementById('s_reg_submit').addEventListener('click',()=>{
+  const sname=document.getElementById('s_name').value;
+  const semail=document.getElementById('s_email').value;
+  const spw=document.getElementById('s_pw').value;
+  const sinst=document.getElementById('s_institute').value;
+  if(!sname||!semail||!spw||!sinst) return alert('Fill all fields');
+  const regNo=Math.random().toString(36).substring(2,9).toUpperCase();
+  studentDB.push({name:sname,email:semail,password:spw,institute:sinst,regNo});
+  if(!institutes.includes(sinst)){ institutes.push(sinst); loadInstitutes(); }
+
+  // Show popup
+  popup.style.display='block';
+  setTimeout(()=>{ popup.style.display='none'; },2000);
+});
+
+// ===== Student Login =====
+document.getElementById('s_login_submit').addEventListener('click',()=>{
+  window.location.href='st.html';
+});
+
+// ===== Institute Login =====
+document.getElementById('i_login_submit').addEventListener('click',()=>{
+  window.location.href='i.html';
+});
+
+// ===== Institute Registration =====
+document.getElementById('i_reg_submit').addEventListener('click',()=>{
+  const name=document.getElementById('i_name').value;
+  const city=document.getElementById('i_city').value;
+  const contact=document.getElementById('i_contact').value;
+  const email=document.getElementById('i_email').value;
+  const password=document.getElementById('i_pw').value;
+  const regNo=Math.random().toString(36).substring(2,9).toUpperCase();
+  instDB.push({name,city,contact,email,password,regNo});
+  if(!institutes.includes(name)){ institutes.push(name); loadInstitutes(); }
+});
+</script>
+</body>
+</html>
