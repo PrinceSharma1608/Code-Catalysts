@@ -119,6 +119,7 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             transition: transform 0.3s;
             cursor: pointer;
+            position: relative;
         }
 
         .tile:hover {
@@ -154,29 +155,40 @@
             border-radius: 5px;
         }
 
-       .achievement-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 1rem;
-    background-color: var(--tile-bg);
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 400px; /* keeps it uniform */
-}
+        .achievement-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1rem;
+            background-color: var(--tile-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            position: relative; /* needed for verification label */
+        }
 
         .achievement-item img {
-    width: auto;          /* preserve natural width */
-    max-width: 100%;      /* fits container */
-    height: auto;         /* preserve natural height */
-    max-height: 200px;    /* limits extremely tall images */
-    object-fit: contain;  /* ensures aspect ratio */
-    border-radius: 5px;
-    margin-bottom: 0.5rem;
-    background-color: #fff;
-}
+            display: block;
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            object-fit: contain;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+            background-color: #fff;
+        }
+
+        .verification-label {
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            color: red;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
         .log-entry {
             background-color: var(--tile-bg);
             padding: 1rem;
@@ -211,14 +223,6 @@
             width: 150px;
             height: 150px;
             border-radius: 50%;
-          
-            .spark-logo {
-    width: 40px;
-    height: auto;
-    margin-right: 10px;
-    object-fit: contain;
-}
-
         }
     </style>
 </head>
@@ -391,6 +395,7 @@
                     <strong>${name}</strong>
                     <div><em>${org}</em></div>
                     <small>${type}</small>
+                    <div class="verification-label">Yet To Be Verified</div>
                 `;
                 achievementsList.appendChild(achievementItem);
 
