@@ -1,402 +1,469 @@
-import { useState } from "react";
-import {
-  Home,
-  User,
-  Award,
-  ClipboardList,
-  FileText,
-  LogOut,
-  PlusCircle,
-  Sun,
-  Moon,
-  University,
-  Menu,
-  Smile
-} from "lucide-react";
+<!DOCTYPE html>
+<html lang="en">
 
-export default function Dashboard() {
-  // UI state
-  const [active, setActive] = useState("home");
-  const [selectedTile, setSelectedTile] = useState(null);
-  const [dark, setDark] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SPARK Student Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
 
-  // Modals
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showPwdModal, setShowPwdModal] = useState(false);
-  const [toast, setToast] = useState(null); // {message, type}
+        body.light-mode {
+            --bg-color: #f0f2f5;
+            --text-color: #333;
+            --sidebar-bg: #fff;
+            --tile-bg: #fff;
+        }
 
-  // Dummy user + org
-  const dummyData = {
-    name: "John Doe",
-    enrollment: "CSE2025001",
-    email: "john.doe@univ.edu",
-    contact: "+91 98765 43210",
-    organisation: "Manipal University Jaipur",
-    university: "Manipal University Jaipur",
-    gpa: 8.7,
-    stats: {
-      seminars: { count: 5, items: ["Seminar on AI", "Seminar on ML"] },
-      conferences: { count: 3, items: ["IEEE Conference", "Tech Conference"] },
-      courses: { count: 4, items: ["Coursera Python", "edX DSA"] },
-      internships: { count: 2, items: ["Google Summer Internship", "Startup Internship"] },
-      volunteering: { count: 6, items: ["Tree Plantation Drive", "Blood Donation Camp"] },
-      extracurriculars: { count: 8, items: ["Football Team", "Drama Club"] },
-    },
-  };
+        body.dark-mode {
+            --bg-color: #1e1e1e;
+            --text-color: #f0f0f0;
+            --sidebar-bg: #333;
+            --tile-bg: #444;
+        }
 
-  const categories = Object.keys(dummyData.stats);
+        body {
+            display: flex;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
 
-  const navItems = [
-    { id: "home", label: "Home", icon: <Home size={20} /> },
-    { id: "profile", label: "Profile", icon: <User size={20} /> },
-    { id: "achievements", label: "Achievements", icon: <Award size={20} /> },
-    { id: "activities", label: "Activities", icon: <ClipboardList size={20} /> },
-    { id: "portfolio", label: "Portfolio", icon: <FileText size={20} /> },
-    { id: "addAchievement", label: "Add Achievement", icon: <PlusCircle size={20} /> },
-  ];
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            padding: 1rem;
+        }
 
-  // Dual-tone palette per theme
-  const tone = dark
-    ? {
-        bg: "bg-neutral-900",
-        panel: "bg-neutral-800",
-        card: "bg-neutral-800",
-        text: "text-neutral-100",
-        subtext: "text-neutral-300",
-        border: "border-neutral-700",
-        accent: "text-cyan-300",
-        chip: "bg-neutral-700",
-        hover: "hover:bg-neutral-700",
-        brand: "text-cyan-400",
-        btn: "bg-cyan-500 hover:bg-cyan-400 text-neutral-900",
-      }
-    : {
-        bg: "bg-slate-50",
-        panel: "bg-white",
-        card: "bg-white",
-        text: "text-slate-900",
-        subtext: "text-slate-600",
-        border: "border-slate-200",
-        accent: "text-indigo-600",
-        chip: "bg-slate-100",
-        hover: "hover:bg-slate-100",
-        brand: "text-indigo-600",
-        btn: "bg-indigo-600 hover:bg-indigo-500 text-white",
-      };
+        .sidebar .top {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
 
-  const showSuccess = (msg) => {
-    setToast({ message: msg, type: "success" });
-    setTimeout(() => setToast(null), 1800);
-  };
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            text-decoration: none;
+            color: var(--text-color);
+            cursor: pointer;
+        }
 
-  return (
-    <div className={`${tone.bg} ${tone.text} flex h-screen transition-colors duration-200`}>
-      {/* Sidebar */}
-      <div
-        className={`${tone.panel} ${tone.text} ${sidebarCollapsed ? "w-16" : "w-64"} border-r ${
-          tone.border
-        } shadow-sm flex flex-col transition-all duration-200`}
-      >
-        <div className={`flex items-center justify-between p-4 border-b ${tone.border}`}>
-          <div className={`flex items-center gap-2 ${sidebarCollapsed ? "opacity-0 w-0" : "opacity-100"} transition-opacity`}>
-            <University size={18} className={tone.brand} />
-            <span className={`text-lg font-bold whitespace-nowrap ${sidebarCollapsed ? "hidden" : "block"}`}>
-              Smart Student Hub
-            </span>
-          </div>
-          <button
-            aria-label="Toggle sidebar"
-            onClick={() => setSidebarCollapsed((v) => !v)}
-            className={`p-2 rounded-xl ${tone.hover}`}
-          >
-            <Menu size={18} />
-          </button>
+        .sidebar nav a:hover {
+            background-color: #007BFF;
+            color: #fff;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .university {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .university img {
+            width: 24px;
+            height: 24px;
+        }
+
+        #theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .tiles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tile {
+            background-color: var(--tile-bg);
+            height: 160px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .tile:hover {
+            transform: translateY(-5px);
+        }
+
+        .form-tile {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 500px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: var(--tile-bg);
+        }
+
+        .form-tile input, .form-tile select, .form-tile textarea {
+            padding: 0.6rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .form-tile button {
+            padding: 0.6rem 1rem;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .achievement-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1rem;
+            background-color: var(--tile-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .achievement-item img {
+            width: 100%;
+            height: auto;
+            max-height: 120px;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .log-entry {
+            background-color: var(--tile-bg);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .profile-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+            margin: auto;
+            background-color: var(--tile-bg);
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .profile-info div {
+            font-size: 1rem;
+        }
+
+        .profile-content img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body class="light-mode">
+
+    <div class="sidebar">
+        <div class="top">
+            <h2>SPARK</h2>
         </div>
-        <nav className="flex-1 p-2 space-y-2">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => {
-                setActive(item.id);
-                setSelectedTile(null);
-              }}
-              className={`flex items-center gap-3 w-full px-3 py-2 rounded-xl text-left text-sm font-medium transition-colors ${
-                active === item.id
-                  ? `${dark ? "bg-cyan-600 text-neutral-900" : "bg-indigo-100 text-indigo-700"}`
-                  : `${tone.hover}`
-              }`}
-            >
-              {item.icon}
-              {!sidebarCollapsed && <span>{item.label}</span>}
-            </button>
-          ))}
+
+        <nav id="nav-links">
+            <a onclick="showSection('dashboard')">🏠 <span>Dashboard</span></a>
+            <a onclick="showSection('add-achievement')">📁 <span>Add Achievement</span></a>
+            <a onclick="showSection('activity')">📝 <span>Activity</span></a>
+            <a onclick="showSection('all-achievements')">📚 <span>All Achievements</span></a>
+            <a onclick="showSection('profile')">👤 <span>Profile</span></a>
+            <a onclick="showSection('feedback')">💬 <span>Feedback</span></a>
         </nav>
-        <button className={`flex items-center gap-2 px-3 py-2 m-2 rounded-xl ${tone.hover}`}>
-          <LogOut size={20} />
-          {!sidebarCollapsed && <span>Logout</span>}
-        </button>
-      </div>
-
-      {/* Main Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top bar */}
-        <div className={`flex items-center justify-between px-4 py-3 border-b ${tone.border} ${tone.panel}`}>
-          <div className="flex items-center gap-2">
-            <University size={18} className={tone.brand} />
-            <span className="font-semibold truncate">{dummyData.university}</span>
-          </div>
-          <button
-            aria-label="Toggle theme"
-            onClick={() => setDark((v) => !v)}
-            className={`p-2 rounded-xl ${tone.hover}`}
-            title={dark ? "Switch to light" : "Switch to dark"}
-          >
-            {dark ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 p-6 overflow-y-auto">
-          {/* HOME */}
-          {active === "home" && !selectedTile && (
-            <div>
-              <h1 className="text-2xl font-bold mb-6">Welcome, {dummyData.name}</h1>
-              <div className="grid grid-cols-1 gap-4">
-                {categories.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedTile(cat)}
-                    className={`${tone.card} border ${tone.border} shadow-sm rounded-2xl p-5 flex justify-between items-center ${
-                      tone.hover
-                    } transition`}
-                  >
-                    <span className="text-lg font-semibold capitalize">{cat}</span>
-                    <span className={`text-2xl font-bold ${tone.brand}`}>{dummyData.stats[cat].count}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* HOME detail */}
-          {active === "home" && selectedTile && (
-            <div>
-              <button className={`${tone.accent} mb-4`} onClick={() => setSelectedTile(null)}>
-                ← Back
-              </button>
-              <h1 className="text-2xl font-bold mb-6 capitalize">{selectedTile}</h1>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {dummyData.stats[selectedTile].items.map((item, i) => (
-                  <div key={i} className={`${tone.card} border ${tone.border} rounded-2xl p-4 shadow-sm`}>
-                    <p className="font-medium">{item}</p>
-                    <div className={`mt-3 h-32 rounded-xl flex items-center justify-center ${tone.chip} ${tone.subtext}`}>
-                      Certificate Preview
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* PROFILE */}
-          {active === "profile" && (
-            <div>
-              <h1 className="text-2xl font-bold mb-6">Profile</h1>
-              <div className={`grid grid-cols-1 lg:grid-cols-3 gap-6`}>
-                {/* Left: details */}
-                <div className={`lg:col-span-2 space-y-4`}>
-                  <div className={`grid grid-cols-1 md:grid-cols-2 gap-4`}>
-                    {[
-                      { label: "Email ID", value: dummyData.email },
-                      { label: "Unique ID No", value: dummyData.enrollment },
-                      { label: "Contact No", value: dummyData.contact },
-                      { label: "Current Organisation", value: dummyData.organisation },
-                    ].map((t, i) => (
-                      <div key={i} className={`${tone.card} border ${tone.border} rounded-2xl p-4`}>
-                        <div className="text-sm opacity-70">{t.label}</div>
-                        <div className="text-lg font-semibold mt-1 break-all">{t.value}</div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex gap-3 pt-2">
-                    <button onClick={() => setShowPwdModal(true)} className={`px-4 py-2 rounded-xl ${tone.btn}`}>
-                      Change Password
-                    </button>
-                    <button onClick={() => setShowEditModal(true)} className={`px-4 py-2 rounded-xl ${tone.hover} border ${tone.border}`}>
-                      Change Personal Details
-                    </button>
-                  </div>
-                </div>
-
-                {/* Right: profile photo */}
-                <div className={`flex justify-center lg:justify-end`}>
-                  <div className={`${tone.card} border ${tone.border} rounded-2xl p-4 w-56 h-56 flex items-center justify-center`}>
-                    <img
-                      alt="Profile"
-                      src="https://avatars.githubusercontent.com/u/9919?s=200&v=4"
-                      className="w-full h-full object-cover rounded-xl"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ACHIEVEMENTS */}
-          {active === "achievements" && (
-            <div>
-              <h1 className="text-2xl font-bold mb-4">Achievements</h1>
-              <p className={`${tone.subtext}`}>Detailed list of all verified achievements will appear here.</p>
-            </div>
-          )}
-
-          {/* ACTIVITIES */}
-          {active === "activities" && (
-            <div>
-              <h1 className="text-2xl font-bold mb-4">Activities</h1>
-              <p className={`${tone.subtext}`}>Detailed list of activities will appear here.</p>
-            </div>
-          )}
-
-          {/* PORTFOLIO */}
-          {active === "portfolio" && (
-            <div>
-              <h1 className="text-2xl font-bold mb-4">Portfolio</h1>
-              <p className={`${tone.subtext}`}>Downloadable digital portfolio will be available here.</p>
-            </div>
-          )}
-
-          {/* ADD ACHIEVEMENT */}
-          {active === "addAchievement" && (
-            <div>
-              <h1 className="text-2xl font-bold mb-6">Add Achievement</h1>
-              <form
-                className="space-y-4 max-w-lg"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  showSuccess("Achievement submitted for approval");
-                }}
-              >
-                <div>
-                  <label className="block text-sm font-medium mb-1">Title</label>
-                  <input type="text" className={`w-full border ${tone.border} ${tone.card} rounded-xl p-2`} placeholder="Achievement Title" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Granting Organization</label>
-                  <input type="text" className={`w-full border ${tone.border} ${tone.card} rounded-xl p-2`} placeholder="Organization Name" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Upload Certificate</label>
-                  <input type="file" className={`w-full border ${tone.border} ${tone.card} rounded-xl p-2`} />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Certificate ID</label>
-                  <input type="text" className={`w-full border ${tone.border} ${tone.card} rounded-xl p-2`} placeholder="Certificate ID" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Category</label>
-                  <select className={`w-full border ${tone.border} ${tone.card} rounded-xl p-2`}>
-                    <option>Seminars</option>
-                    <option>Conferences</option>
-                    <option>Online Courses</option>
-                    <option>Internships</option>
-                    <option>Volunteering</option>
-                    <option>Extra-Curriculars</option>
-                  </select>
-                </div>
-                <button type="submit" className={`px-4 py-2 rounded-xl ${tone.btn}`}>Submit</button>
-              </form>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Edit Personal Details Modal */}
-      {showEditModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setShowEditModal(false)} />
-          <div className={`${tone.card} ${tone.text} border ${tone.border} rounded-2xl p-6 w-full max-w-md relative z-10`}>
-            <h2 className="text-xl font-semibold mb-4">Edit Personal Details</h2>
-            <form
-              className="space-y-4"
-              onSubmit={(e) => {
-                e.preventDefault();
-                setShowEditModal(false);
-                showSuccess("Profile updated successfully");
-              }}
-            >
-              <div>
-                <label className="block text-sm mb-1">Profile Photo</label>
-                <input type="file" className={`w-full border ${tone.border} ${tone.card} rounded-xl p-2`} />
-              </div>
-              <div>
-                <label className="block text-sm mb-1">Email ID</label>
-                <input type="email" defaultValue={dummyData.email} className={`w-full border ${tone.border} ${tone.card} rounded-xl p-2`} />
-              </div>
-              <div>
-                <label className="block text-sm mb-1">Contact No</label>
-                <input type="tel" defaultValue={dummyData.contact} className={`w-full border ${tone.border} ${tone.card} rounded-xl p-2`} />
-              </div>
-              <div className="flex justify-end gap-2 pt-2">
-                <button type="button" onClick={() => setShowEditModal(false)} className={`px-4 py-2 rounded-xl ${tone.hover} border ${tone.border}`}>
-                  Cancel
-                </button>
-                <button type="submit" className={`px-4 py-2 rounded-xl ${tone.btn}`}>Save</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Change Password Modal */}
-      {showPwdModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setShowPwdModal(false)} />
-          <div className={`${tone.card} ${tone.text} border ${tone.border} rounded-2xl p-6 w-full max-w-md relative z-10`}>
-            <h2 className="text-xl font-semibold mb-4">Change Password</h2>
-            <form
-              className="space-y-4"
-              onSubmit={(e) => {
-                e.preventDefault();
-                setShowPwdModal(false);
-                showSuccess("Password changed successfully");
-              }}
-            >
-              <div>
-                <label className="block text-sm mb-1">Old Password</label>
-                <input type="password" className={`w-full border ${tone.border} ${tone.card} rounded-xl p-2`} />
-              </div>
-              <div>
-                <label className="block text-sm mb-1">New Password</label>
-                <input type="password" className={`w-full border ${tone.border} ${tone.card} rounded-xl p-2`} />
-              </div>
-              <div>
-                <label className="block text-sm mb-1">Confirm New Password</label>
-                <input type="password" className={`w-full border ${tone.border} ${tone.card} rounded-xl p-2`} />
-              </div>
-              <div className="flex justify-end gap-2 pt-2">
-                <button type="button" onClick={() => setShowPwdModal(false)} className={`px-4 py-2 rounded-xl ${tone.hover} border ${tone.border}`}>
-                  Cancel
-                </button>
-                <button type="submit" className={`px-4 py-2 rounded-xl ${tone.btn}`}>Update</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Toast */}
-      {toast && (
-        <div className="fixed bottom-4 right-4 z-50">
-          <div className={`${tone.card} border ${tone.border} rounded-2xl px-4 py-3 flex items-center gap-2 shadow-lg`}>
-            <div className="rounded-full p-1 bg-green-500/20">
-              <Smile className="text-green-500" size={18} />
-            </div>
-            <span>{toast.message}</span>
-          </div>
-        </div>
-      )}
     </div>
-  );
-}
+
+    <div class="main-content">
+        <div class="header">
+            <div class="university">
+                <img src="https://cdn-icons-png.flaticon.com/512/1995/1995510.png" alt="University Icon"/>
+                <span>Manipal University Jaipur</span>
+            </div>
+            <button id="theme-toggle">🌞 / 🌙</button>
+        </div>
+
+        <div id="dashboard" class="section active">
+            <div class="tiles">
+                <div class="tile" id="tile-Seminar" onclick="showCertificates('Seminar')">Seminars <br><strong>0</strong></div>
+                <div class="tile" id="tile-Workshop" onclick="showCertificates('Workshop')">Volunteer Activity <br><strong>0</strong></div>
+                <div class="tile" id="tile-Internship" onclick="showCertificates('Internship')">Internship <br><strong>0</strong></div>
+                <div class="tile" id="tile-Certification" onclick="showCertificates('Certification')">Certifications <br><strong>0</strong></div>
+                <div class="tile" id="tile-Conference" onclick="showCertificates('Conference')">Conferences <br><strong>0</strong></div>
+                <div class="tile" id="tile-Other" onclick="showCertificates('Other')">Extra Curricular <br><strong>0</strong></div>
+            </div>
+        </div>
+
+        <div id="add-achievement" class="section">
+            <div class="form-tile">
+                <input type="text" id="cert-name" placeholder="Certificate Name" required />
+                <input type="text" id="cert-org" placeholder="Issuing Organization" required />
+                <select id="cert-type">
+                    <option value="">Select Certificate Type</option>
+                    <option value="Seminar">Seminar</option>
+                    <option value="Workshop">Workshop</option>
+                    <option value="Internship">Internship</option>
+                    <option value="Certification">Certification</option>
+                    <option value="Conference">Conference</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input type="file" id="cert-image" accept="image/*" required />
+                <button onclick="addAchievement()">Upload Achievement</button>
+            </div>
+
+            <div class="tiles" id="achievements-list"></div>
+        </div>
+
+        <div id="activity" class="section">
+            <div class="tiles" id="activity-log"></div>
+        </div>
+
+        <div id="all-achievements" class="section">
+            <div class="tiles" id="all-achievements-list"></div>
+        </div>
+
+        <div id="category-certificates" class="section">
+            <h3>Certificates in this Category</h3>
+            <div class="tiles" id="category-cert-list"></div>
+        </div>
+
+        <div id="profile" class="section">
+            <div class="profile-content">
+                <div class="profile-info">
+                    <div><strong>Name:</strong> Prince Sharma</div>
+                    <div><strong>University:</strong> Manipal University Jaipur</div>
+                    <div><strong>Email:</strong> prince@example.com</div>
+                    <div><strong>Contact:</strong> +91-9876543210</div>
+                    <div><strong>ID:</strong> 1234567890</div>
+                </div>
+                <img src="https://via.placeholder.com/150" alt="Dummy Profile"/>
+            </div>
+        </div>
+
+        <div id="feedback" class="section">
+            <div class="form-tile">
+                <input type="text" id="feedback-name" placeholder="Your Name" required />
+                <input type="email" id="feedback-email" placeholder="Your Email" required />
+                <textarea id="feedback-message" rows="5" placeholder="Your Feedback..." required></textarea>
+                <button onclick="submitFeedback()">Submit Feedback</button>
+            </div>
+            <div class="tiles" id="feedback-log"></div>
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const universityIcon = document.querySelector('.university img');
+        const achievementsList = document.getElementById('achievements-list');
+        const activityLog = document.getElementById('activity-log');
+        const allAchievementsList = document.getElementById('all-achievements-list');
+        const categoryCertList = document.getElementById('category-cert-list');
+        const feedbackLog = document.getElementById('feedback-log');
+
+        let achievementCounter = 0;
+        const achievements = [];
+        const categoryCounters = {
+            Seminar: 0,
+            Workshop: 0,
+            Internship: 0,
+            Certification: 0,
+            Conference: 0,
+            Other: 0
+        };
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');
+
+            if (body.classList.contains('dark-mode')) {
+                universityIcon.src = 'https://cdn-icons-png.flaticon.com/512/3062/3062634.png';
+            } else {
+                universityIcon.src = 'https://cdn-icons-png.flaticon.com/512/1995/1995510.png';
+            }
+        });
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function addAchievement() {
+            const name = document.getElementById('cert-name').value;
+            const org = document.getElementById('cert-org').value;
+            const type = document.getElementById('cert-type').value;
+            const imageInput = document.getElementById('cert-image');
+            const imageFile = imageInput.files[0];
+
+            if (!name || !org || !type || !imageFile) {
+                alert('Please fill all fields and upload an image.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgSrc = e.target.result;
+
+                achievementCounter++;
+                const timestamp = new Date().toLocaleString();
+
+                const achievement = {
+                    id: achievementCounter,
+                    name,
+                    org,
+                    type,
+                    timestamp,
+                    imgSrc
+                };
+
+                achievements.push(achievement);
+
+                const achievementItem = document.createElement('div');
+                achievementItem.className = 'achievement-item';
+                achievementItem.innerHTML = `
+                    <img src="${imgSrc}" alt="Certificate Image"/>
+                    <strong>${name}</strong>
+                    <div><em>${org}</em></div>
+                    <small>${type}</small>
+                `;
+                achievementsList.appendChild(achievementItem);
+
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                logEntry.textContent = `[${timestamp}] Uploaded Achievement: "${name}" from ${org} (${type})`;
+                activityLog.prepend(logEntry);
+
+                categoryCounters[type]++;
+                const tile = document.getElementById(`tile-${type}`);
+                tile.innerHTML = `${type}s <br><strong>${categoryCounters[type]}</strong>`;
+
+                const allAchievementItem = document.createElement('div');
+                allAchievementItem.className = 'log-entry';
+                allAchievementItem.innerHTML = `
+                    <strong>${achievementCounter}.</strong> 
+                    ID: #${achievementCounter.toString().padStart(4, '0')} | 
+                    <strong>Name:</strong> ${name} | 
+                    <strong>Issued By:</strong> ${org} | 
+                    <strong>Type:</strong> ${type} | 
+                    <strong>Date:</strong> ${timestamp}
+                `;
+                allAchievementsList.prepend(allAchievementItem);
+
+                document.getElementById('cert-name').value = '';
+                document.getElementById('cert-org').value = '';
+                document.getElementById('cert-type').value = '';
+                imageInput.value = '';
+            };
+
+            reader.readAsDataURL(imageFile);
+        }
+
+        function showCertificates(category) {
+            categoryCertList.innerHTML = '';
+
+            const filtered = achievements.filter(a => a.type === category);
+
+            if (filtered.length === 0) {
+                categoryCertList.innerHTML = `<p>No certificates uploaded in ${category}</p>`;
+            } else {
+                filtered.forEach(a => {
+                    const tile = document.createElement('div');
+                    tile.className = 'tile';
+                    tile.innerHTML = `
+                        <strong>${a.name}</strong><br>
+                        <small>${a.timestamp}</small>
+                    `;
+                    categoryCertList.appendChild(tile);
+                });
+            }
+
+            showSection('category-certificates');
+        }
+
+        function submitFeedback() {
+            const name = document.getElementById('feedback-name').value;
+            const email = document.getElementById('feedback-email').value;
+            const message = document.getElementById('feedback-message').value;
+
+            if (!name || !email || !message) {
+                alert('Please fill all fields before submitting.');
+                return;
+            }
+
+            const timestamp = new Date().toLocaleString();
+
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `
+                <strong>${name}</strong> (${email})<br>
+                <em>${timestamp}</em><br>
+                ${message}
+            `;
+
+            feedbackLog.prepend(logEntry);
+
+            document.getElementById('feedback-name').value = '';
+            document.getElementById('feedback-email').value = '';
+            document.getElementById('feedback-message').value = '';
+
+            alert('Thank you for your feedback!');
+        }
+    </script>
+
+</body>
+
+</html>
