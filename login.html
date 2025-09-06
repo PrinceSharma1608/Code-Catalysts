@@ -17,6 +17,20 @@ canvas#bg-canvas { position:fixed; inset:0; z-index:0; }
 .col { width:360px; min-height:480px; border-radius:12px; padding:22px; background:rgba(255,255,255,0.92); box-shadow:0 12px 30px rgba(2,6,23,0.12); display:flex; flex-direction:column; }
 .col h3 { margin-top:0; color:#0b4a55; }
 .col p { color:#4b5563; margin-top:6px; margin-bottom:12px; }
+
+.student-img-wrapper, .inst-img-wrapper {
+  width: 100%;
+  text-align: center;
+  margin: 12px 0; /* space between text and buttons */
+}
+
+.student-img-wrapper img, .inst-img-wrapper img {
+  max-width: 100%;
+  height: auto; /* preserve aspect ratio */
+  border-radius: 12px;
+  object-fit: cover;
+}
+
 .col-content { flex:1; display:flex; flex-direction:column; justify-content:flex-end; }
 .btn-group { margin-bottom:16px; }
 
@@ -54,20 +68,29 @@ body.dark .btn-ghost { background:transparent; border:1px solid rgba(255,255,255
 
 <div class="layout">
   <div class="panel-wrap">
+
+    <!-- Student Panel -->
     <div class="col" id="studentPanel">
       <h3>Student Portal</h3>
       <p>Login or register as a student.</p>
+      
+      <div class="student-img-wrapper">
+        <img src="student-studying-at-home-free-vector.jpg" alt="Student Studying">
+      </div>
+      
       <div class="col-content">
         <div class="btn-group">
           <button class="btn btn-primary" id="studentLoginBtn">Student Login</button>
           <button class="btn btn-ghost" id="studentRegBtn">Student Register</button>
         </div>
+        
         <div class="form" id="studentLoginForm">
           <label>Email</label><input id="s_login_email" type="email"/>
           <label>Password</label><input id="s_login_pw" type="password"/>
           <button class="btn btn-primary" id="s_login_submit">Login</button>
           <button class="btn btn-ghost" id="s_back">Back</button>
         </div>
+        
         <div class="form" id="studentRegForm">
           <label>Full name</label><input id="s_name"/>
           <label>Email</label><input id="s_email" type="email"/>
@@ -80,20 +103,28 @@ body.dark .btn-ghost { background:transparent; border:1px solid rgba(255,255,255
       </div>
     </div>
 
+    <!-- Institute Panel -->
     <div class="col" id="instPanel">
       <h3>Institute Portal</h3>
       <p>Register your institute or login.</p>
+      
+      <div class="inst-img-wrapper">
+        <img src="school-building-vector-illustration-cartoon-600nw-2486602447.webp" alt="Institute Building">
+      </div>
+      
       <div class="col-content">
         <div class="btn-group">
           <button class="btn btn-primary" id="instLoginBtn">Institute Login</button>
           <button class="btn btn-ghost" id="instRegBtn">Institute Register</button>
         </div>
+        
         <div class="form" id="instLoginForm">
           <label>Official Email</label><input id="i_login_email" type="email"/>
           <label>Password</label><input id="i_login_pw" type="password"/>
           <button class="btn btn-primary" id="i_login_submit">Login</button>
           <button class="btn btn-ghost" id="i_back">Back</button>
         </div>
+        
         <div class="form" id="instRegForm">
           <label>Institute Name</label><input id="i_name"/>
           <label>City</label><input id="i_city"/>
