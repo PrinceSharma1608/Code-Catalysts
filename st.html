@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SPARK Student Dashboard</title>
     <style>
         * {
@@ -65,6 +65,8 @@
         .main-content {
             flex-grow: 1;
             padding: 2rem;
+            display: flex;
+            flex-direction: column;
         }
 
         .header {
@@ -96,30 +98,36 @@
 
         .section {
             display: none;
+            flex-grow: 1;
         }
 
         .section.active {
             display: block;
         }
 
-        .tiles {
+        /* Dashboard 2x3 grid */
+        #dashboard .tiles {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
             gap: 1.5rem;
+            height: calc(100vh - 150px);
         }
 
+        /* Dashboard tiles fill grid cell */
         .tile {
             background-color: var(--tile-bg);
-            height: 160px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s;
             cursor: pointer;
             position: relative;
+            width: 100%;
+            height: 100%;
         }
 
         .tile:hover {
@@ -134,11 +142,13 @@
             max-width: 500px;
             margin: auto;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             background-color: var(--tile-bg);
         }
 
-        .form-tile input, .form-tile select, .form-tile textarea {
+        .form-tile input,
+        .form-tile select,
+        .form-tile textarea {
             padding: 0.6rem;
             border-radius: 5px;
             border: 1px solid #ccc;
@@ -163,10 +173,10 @@
             padding: 1rem;
             background-color: var(--tile-bg);
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 400px;
-            position: relative; /* needed for verification label */
+            position: relative; /* for verification label */
         }
 
         .achievement-item img {
@@ -193,7 +203,7 @@
             background-color: var(--tile-bg);
             padding: 1rem;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin-bottom: 1rem;
         }
 
@@ -206,7 +216,7 @@
             background-color: var(--tile-bg);
             border-radius: 10px;
             padding: 1rem;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .profile-info {
@@ -247,7 +257,7 @@
     <div class="main-content">
         <div class="header">
             <div class="university">
-                <img src="https://cdn-icons-png.flaticon.com/512/1995/1995510.png" alt="University Icon"/>
+                <img src="https://cdn-icons-png.flaticon.com/512/1995/1995510.png" alt="University Icon" />
                 <span>Manipal University Jaipur</span>
             </div>
             <button id="theme-toggle">🌞 / 🌙</button>
@@ -306,7 +316,7 @@
                     <div><strong>Contact:</strong> +91-9876543210</div>
                     <div><strong>ID:</strong> 1234567890</div>
                 </div>
-                <img src="https://via.placeholder.com/150" alt="Dummy Profile"/>
+                <img src="https://via.placeholder.com/150" alt="Dummy Profile" />
             </div>
         </div>
 
@@ -371,23 +381,16 @@
             }
 
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 const imgSrc = e.target.result;
 
                 achievementCounter++;
                 const timestamp = new Date().toLocaleString();
 
-                const achievement = {
-                    id: achievementCounter,
-                    name,
-                    org,
-                    type,
-                    timestamp,
-                    imgSrc
-                };
-
+                const achievement = { id: achievementCounter, name, org, type, timestamp, imgSrc };
                 achievements.push(achievement);
 
+                // Display in Add Achievement Section
                 const achievementItem = document.createElement('div');
                 achievementItem.className = 'achievement-item';
                 achievementItem.innerHTML = `
@@ -399,15 +402,18 @@
                 `;
                 achievementsList.appendChild(achievementItem);
 
+                // Log Activity
                 const logEntry = document.createElement('div');
                 logEntry.className = 'log-entry';
                 logEntry.textContent = `[${timestamp}] Uploaded Achievement: "${name}" from ${org} (${type})`;
                 activityLog.prepend(logEntry);
 
+                // Update Dashboard Tile Counter
                 categoryCounters[type]++;
                 const tile = document.getElementById(`tile-${type}`);
                 tile.innerHTML = `${type}s <br><strong>${categoryCounters[type]}</strong>`;
 
+                // Update All Achievements Section
                 const allAchievementItem = document.createElement('div');
                 allAchievementItem.className = 'log-entry';
                 allAchievementItem.innerHTML = `
@@ -425,13 +431,11 @@
                 document.getElementById('cert-type').value = '';
                 imageInput.value = '';
             };
-
             reader.readAsDataURL(imageFile);
         }
 
         function showCertificates(category) {
             categoryCertList.innerHTML = '';
-
             const filtered = achievements.filter(a => a.type === category);
 
             if (filtered.length === 0) {
@@ -443,6 +447,7 @@
                     tile.innerHTML = `
                         <strong>${a.name}</strong><br>
                         <small>${a.timestamp}</small>
+                        <div class="verification-label">Yet To Be Verified</div>
                     `;
                     categoryCertList.appendChild(tile);
                 });
@@ -462,7 +467,6 @@
             }
 
             const timestamp = new Date().toLocaleString();
-
             const logEntry = document.createElement('div');
             logEntry.className = 'log-entry';
             logEntry.innerHTML = `
